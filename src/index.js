@@ -6,6 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Ruta Raíz 
+app.get("'/", (req, res) => { 
+     res.send("br br patapim");
+});
+
 // ✅ Crear tarea
 app.post("/tasks", async (req, res) => {
   try {
