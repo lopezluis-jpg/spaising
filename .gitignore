@@ -1,0 +1,7 @@
+.env
+node_modules
+
+# .env
+DATABASE_URL=postgres://usuario:password@host:5432/nombre_bd
+PORT=3000
+NODE_ENV=development
