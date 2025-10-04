@@ -2,11 +2,16 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import dotenv from 'dotenv';
 
-dotenv.config();
+// Solo cargar dotenv si estamos en local
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // Render te da esta variable
-  ssl: { rejectUnauthorized: false, }
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // requerido en Render
+  },
 });
 
 // Crear tabla si no existe
@@ -21,7 +26,7 @@ const pool = new Pool({
     `);
     console.log("✅ Tabla 'tasks' lista");
   } catch (err) {
-    console.error("❌ Error creando tabla:", err);
+    console.error("❌ Error creando tabla:", err.message);
   }
 })();
 
