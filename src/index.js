@@ -10,8 +10,14 @@ app.use(cors());
 app.use(express.json());
 
 // 🏠 Ruta raíz (Render la usa para probar si el servidor responde)
-app.get("/", (req, res) => { 
-  res.send("🚀 Servidor funcionando correctamente con la base de datos spaising");
+app.get('/', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM tasks');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener las tareas');
+  }
 });
 
 // ✅ Crear tarea
