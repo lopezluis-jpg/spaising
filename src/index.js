@@ -1,14 +1,7 @@
-// ============================
 // 📁 index.js — Servidor principal
-// ============================
-
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import pool from "./db.js"; // Asegúrate de tener este archivo creado correctamente
-
-// Cargar variables del archivo .env
-dotenv.config();
+import pool from "./db.js"; // Tu archivo db.js con DATABASE_URL
 
 const app = express();
 
@@ -16,9 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Ruta principal (para probar que el servidor funciona)
-app.get("/", (req, res) => {
-  res.send("🚀 Servidor funcionando correctamente desde Render");
+// 🏠 Ruta raíz (Render la usa para probar si el servidor responde)
+app.get("/", (req, res) => { 
+  res.send("🚀 Servidor funcionando correctamente con la base de datos spaising");
 });
 
 // ✅ Crear tarea
@@ -36,7 +29,7 @@ app.post("/tasks", async (req, res) => {
   }
 });
 
-// ✅ Listar todas las tareas
+// 📋 Listar tareas
 app.get("/tasks", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM tasks ORDER BY id ASC");
@@ -47,7 +40,7 @@ app.get("/tasks", async (req, res) => {
   }
 });
 
-// ✅ Actualizar tarea
+// ✏ Actualizar tarea
 app.put("/tasks/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,7 +56,7 @@ app.put("/tasks/:id", async (req, res) => {
   }
 });
 
-// ✅ Eliminar tarea
+// 🗑 Eliminar tarea
 app.delete("/tasks/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -75,11 +68,8 @@ app.delete("/tasks/:id", async (req, res) => {
   }
 });
 
-// ============================
-// 🟢 Iniciar el servidor
-// ============================
+// 🚀 Iniciar servidor
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });

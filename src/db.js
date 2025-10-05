@@ -1,27 +1,43 @@
-
+// 📁 db.js
 import pkg from "pg";
+const { Pool } = pkg;
 import dotenv from "dotenv";
 
-dotenv.config();
+// Cargar .env solo en desarrollo local
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
-const { Pool } = pkg;
+// Tomar la URL desde Render o desde .env
+const connectionString = process.env.DATABASE_URL;
 
+// Validar que la variable exista
+if (!connectionString) {
+  console.error("❌ No se encontró DATABASE_URL. Verifica que esté configurada en Render o en tu archivo .env");
+}
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // ⚠️ Importante para Render (usa SSL)
-  },
+  connectionString,
+  ssl: { rejectUnauthorized: false }, // ⚠️ Obligatorio en Render
 });
 
-// Prueba la conexión apenas se inicie el servidor
+// Verificar conexión y crear tabla si no existe
 (async () => {
   try {
     const client = await pool.connect();
-    console.log("✅ Conexión exitosa a la base de datos PostgreSQL");
+    console.log("✅ Conectado exitosamente a la base de datos PostgreSQL");
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS tasks (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        completed BOOLEAN DEFAULT false
+      )
+    `);
+    console.log("✅ Tabla 'tasks' lista");
     client.release();
   } catch (err) {
-    console.error("❌ Error al conectar a la base de datos:", err.message);
+    console.error("❌ Error al conectar o crear tabla:", err.message);
   }
 })();
 
